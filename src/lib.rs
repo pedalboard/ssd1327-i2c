@@ -339,6 +339,6 @@ where
     I2C: embedded_hal::blocking::i2c::Write,
 {
     fn size(&self) -> Size {
-        Size::new((self.width * 2) as u32, self.height as u32)
+        Size::new(128 as u32, 128 u32)
     }
 }
