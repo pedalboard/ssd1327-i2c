@@ -27,11 +27,11 @@
 //!     driver.send_cmd(ssd1327_i2c::Commands::DisplayModeAllOFF);
 //!     delay.delay_ms(1000u32);
 //! }
-//! ```
+//! ```ssd1306
 
 #![no_std]
 use core::result::Result;
-use embedded_hal;
+use embedded_hal::i2c::I2c;
 
 #[cfg(feature = "graphics")]
 use embedded_graphics_core::{
@@ -40,10 +40,7 @@ use embedded_graphics_core::{
 };
 
 /// SSD1327 I2C driver container
-pub struct SSD1327I2C<I2C>
-where
-    I2C: embedded_hal::blocking::i2c::Write,
-{
+pub struct SSD1327I2C<I2C> {
     i2c: I2C,
     slave_address: u8,
     width: u8,
@@ -52,10 +49,7 @@ where
     framebuffer: [u8; 128 * 64],
 }
 
-impl<I2C> SSD1327I2C<I2C>
-where
-    I2C: embedded_hal::blocking::i2c::Write,
-{
+impl<I2C: I2c> SSD1327I2C<I2C> {
     /// Create a new SSD1327I2C object with custom slave adress, width and height
     pub fn with_addr_wh(i2c: I2C, slave_address: u8, width: u8, height: u8) -> Self {
         #[cfg(feature = "graphics")]
@@ -300,10 +294,7 @@ pub enum Commands {
 }
 
 #[cfg(feature = "graphics")]
-impl<I2C> DrawTarget for SSD1327I2C<I2C>
-where
-    I2C: embedded_hal::blocking::i2c::Write,
-{
+impl<I2C: I2c> DrawTarget for SSD1327I2C<I2C> {
     type Color = Gray4;
 
     type Error = I2C::Error;
@@ -334,11 +325,8 @@ where
 }
 
 #[cfg(feature = "graphics")]
-impl<I2C> OriginDimensions for SSD1327I2C<I2C>
-where
-    I2C: embedded_hal::blocking::i2c::Write,
-{
+impl<I2C: I2c> OriginDimensions for SSD1327I2C<I2C> {
     fn size(&self) -> Size {
-        Size::new(128 as u32, 128 as u32)
+        Size::new(128, 128)
     }
 }
